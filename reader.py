@@ -15,6 +15,12 @@ def im_rotate(img, degree):
     rotatefigure = cv2.getRotationMatrix2D(centerRotatePT, degree, 1)
     result = cv2.warpAffine(img, rotatefigure, (new_w, new_h))
     return result
+def detect_digit_num(zero_angle, max_angle, detect_angle, max_num):
+    entire_range = abs(max_angle - zero_angle)
+    detect_range = abs(detect_angle - zero_angle)
+    detect_percent = detect_range/entire_range
+    detect_digit_num = max_num*detect_percent
+    return round(detect_digit_num, 1)
 
 image_size = 200
 
@@ -30,8 +36,10 @@ for i in range(360):
     arr2 = im_rotate(arr1, i)
     bit_and = cv2.bitwise_and(canny, arr2)
     angle.append(np.sum(bit_and))
-print(angle)
-print(angle.index(max(angle)))
+
+print("detect_angle :", angle.index(max(angle)))
+print("detect_num :", detect_digit_num(0, 360, angle.index(max(angle)), 100))
+
 arr3 = im_rotate(arr1, angle.index((max(angle))))
 cv2.imshow('canny', canny)
 cv2.imshow('arr1_rotate', arr3)
